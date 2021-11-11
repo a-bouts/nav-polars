@@ -1,0 +1,19 @@
+[package]
+name = "polars"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0.45"
+async-trait = "0.1.51"
+confy = { git = "https://github.com/rust-cli/confy", version = "0.4.0", default-features = false, features = ["yaml_conf"] }
+log = "0.4.14"
+env_logger = "0.9.0"
+rocket = { version = "0.5.0-rc.1", features = ["json"] }
+serde = { version = "1.0.130", features = ["derive"] }
+serde_json = "1.0.68"
+serde_yaml = "0.8.21"
+structopt = "0.3.25"
+thiserror = "1.0.30"
