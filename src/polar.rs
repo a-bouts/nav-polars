@@ -290,8 +290,10 @@ pub(crate) struct Winch {
     pub(crate) tack: PenaltyCase,
     pub(crate) gybe: PenaltyCase,
     pub(crate) sail_change: PenaltyCase,
-    pub(crate) lws: u8,
-    pub(crate) hws: u8,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub(crate) lws: Option<u8>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub(crate) hws: Option<u8>,
 }
 
 #[derive(Deserialize, Serialize, Debug)]
@@ -301,7 +303,8 @@ pub(crate) struct PenaltyCase {
     pub(crate) std_ratio: f64,
     pub(crate) pro_timer_sec: u16,
     pub(crate) pro_ratio: f64,
-    pub(crate) std: PenaltyBoundaries
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub(crate) std: Option<PenaltyBoundaries>,
 }
 
 #[derive(Deserialize, Serialize, Debug)]
