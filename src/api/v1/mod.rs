@@ -1,4 +1,5 @@
 use rocket::{delete, get, post, put, Route, routes, State};
+use rocket::form::{FromForm, FromFormField};
 use rocket::http::Status;
 use rocket::serde::json::Json;
 
@@ -8,11 +9,42 @@ pub(crate) fn routes() -> Vec<Route> {
     routes![list, get, find_by_polar_id, post, put, delete, archive, restore]
 }
 
-#[get("/polars?<archived>", rank = 25)]
-async fn list(polar_service: &State<PolarService>, archived: Option<bool>) -> Result<Json<Vec<Polar>>, Status> {
+#[derive(FromForm)]
+struct Sort {
+    sort_by: String,
+    #[field(default = Order::Asc)]
+    order: Order,
+}
+
+#[derive(FromFormField)]
+enum Order {
+    Asc,
+    Desc
+}
+
+#[get("/polars?<archived>&<sort..>", rank = 25)]
+async fn list(polar_service: &State<PolarService>, archived: Option<bool>, sort: Option<Sort>) -> Result<Json<Vec<Polar>>, Status> {
 
     match polar_service.list(archived).await {
-        Ok(polars) => Ok(Json(polars.into_iter().map(|r| r.into()).collect())),
+        Ok(polars) => {
+            let mut polars: Vec<Polar> = polars.into_iter().map(|r| r.into()).collect();
+            if let Some(sort) = sort {
+                polars.sort_by(|a, b| {
+                    let (a, b) = match sort.order {
+                        Order::Asc => (a, b),
+                        Order::Desc => (b, a)
+                    };
+
+                    match sort.sort_by.as_str() {
+                        "id" => a.id.cmp(&b.id),
+                        "_id" => a.polar_id.cmp(&b.polar_id),
+                        _ => a.id.cmp(&b.id),
+                    }
+                })
+            }
+
+            Ok(Json(polars))
+        },
         Err(_) => Err(Status::InternalServerError)
     }
 }

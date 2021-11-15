@@ -48,7 +48,6 @@ impl PolarService {
             if let Ok(entry) = entry {
                 if let Ok(metadata) = entry.metadata() {
                     if metadata.is_file() {
-                        println!("entry {:?}", entry.path());
                         if let Some(ext) = entry.path().extension() {
                             if ext == OsStr::new("yaml") {
                                 let file = File::open(entry.path()).unwrap();

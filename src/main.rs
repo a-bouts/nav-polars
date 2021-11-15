@@ -20,7 +20,7 @@ struct Cli {
 fn rocket() -> _ {
     std::env::var("RUST_LOG").map_err(|_| {
         std::env::set_var("RUST_LOG", "debug");
-    });
+    }).unwrap_or_default();
     env_logger::init();
 
     let args = Cli::from_args();
