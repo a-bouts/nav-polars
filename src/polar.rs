@@ -304,6 +304,8 @@ pub(crate) struct PenaltyCase {
     pub(crate) pro_ratio: f64,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) std: Option<PenaltyBoundaries>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub(crate) pro: Option<PenaltyBoundaries>,
 }
 
 #[derive(Deserialize, Serialize, Debug)]
